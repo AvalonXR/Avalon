@@ -16,6 +16,7 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.kotlin.reflect)
     implementation(libs.vrc.api)
     implementation(libs.discord)
     implementation(libs.bundles.spring)

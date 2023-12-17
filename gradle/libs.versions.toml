@@ -14,6 +14,7 @@ spring-dependency-management = { id = "io.spring.dependency-management", version
 
 [libraries]
 # Direct libraries
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 vrc-api = { module = "com.github.vrchatapi:vrchatapi-java", version.ref = "vrcapi-java" }
 discord = { module = "com.discord4j:discord4j-core", version.ref = "discord" }
 # Spring
