@@ -1,15 +1,15 @@
 package xyz.avalonxr.enums
 
+import xyz.avalonxr.handler.exit.ApplicationExitHandler
 import xyz.avalonxr.message.ExitMessage
 import xyz.avalonxr.message.Message
-import xyz.avalonxr.handler.exit.ApplicationExitHandler
 
 /**
  * @author Atri
  *
  * Exit code message mapping class which can be used to determine what the cause of the application's shutdown was. This
- * is used primarily in conjunction with derivatives of [ApplicationExitHandler] to determine what should be done depending
- * on the [code] provided by an instance of this enum.
+ * is used primarily in conjunction with derivatives of [ApplicationExitHandler] to determine what should be done
+ * depending on the [code] provided by an instance of this enum.
  *
  * @property code The exit code to associate with this signal.
  * @property message The cause or log message to send in relation to this exit code.

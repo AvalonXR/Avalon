@@ -7,12 +7,16 @@ spring-dependency-management = "1.1.4"
 kotest-core = "5.8.0"
 kotest-spring = "1.1.3"
 mockk = "1.13.8"
+detekt = "1.23.4"
 
 [plugins]
 boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 [libraries]
+# Detekt
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 # Direct libraries
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 vrc-api = { module = "com.github.vrchatapi:vrchatapi-java", version.ref = "vrcapi-java" }

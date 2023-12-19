@@ -42,8 +42,6 @@ class EmbedDslSpec : DescribeSpec({
                     field("B", "B")
                     field("C", "C")
                 }
-
-
             }
 
             it("Should have the correct title") {

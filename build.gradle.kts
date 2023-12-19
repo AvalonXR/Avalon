@@ -1,6 +1,11 @@
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+import org.jetbrains.kotlin.config.JvmTarget
+
 plugins {
     alias(libs.plugins.boot)
     alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.detekt)
     kotlin("jvm") version libs.versions.kotlin
     kotlin("plugin.spring") version libs.versions.kotlin
 }
@@ -16,6 +21,8 @@ repositories {
 }
 
 dependencies {
+    detektPlugins(libs.detekt.formatting)
+
     implementation(libs.kotlin.reflect)
     implementation(libs.vrc.api)
     implementation(libs.discord)
@@ -31,4 +38,28 @@ tasks.test {
 
 kotlin {
     jvmToolchain(21)
+}
+
+detekt {
+    autoCorrect = true
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom("$projectDir/config/detekt.yml")
+    baseline = file("$projectDir/config/baseline.xml")
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = "21"
+
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        txt.required.set(true)
+        sarif.required.set(true)
+        md.required.set(true)
+    }
+}
+
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    jvmTarget = "21"
 }

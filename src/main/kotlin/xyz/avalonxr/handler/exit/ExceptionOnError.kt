@@ -7,8 +7,8 @@ import kotlin.jvm.Throws
  * @author Atri
  *
  * A derivative of [ApplicationExitHandler] which throws an exception containing the specified error message whenever an
- * error exit code is encountered. This can be helpful for debugging if the application appears to randomly crash with no
- * explanation.
+ * error exit code is encountered. This can be helpful for debugging if the application appears to randomly crash with
+ * no explanation.
  */
 data object ExceptionOnError : ApplicationExitHandler {
 

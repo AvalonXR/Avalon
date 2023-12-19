@@ -9,10 +9,16 @@ import discord4j.discordjson.json.ImmutableApplicationCommandRequest
 @DslMarker
 annotation class CommandDsl
 
+typealias CommandRequestBuilder =
+    ImmutableApplicationCommandRequest.Builder
+
+typealias OptionDataBuilder =
+    ImmutableApplicationCommandOptionData.Builder
+
 @CommandDsl
 fun command(
     name: String,
-    builder: ImmutableApplicationCommandRequest.Builder.() -> Unit = {}
+    builder: CommandRequestBuilder.() -> Unit = {}
 ): ApplicationCommandRequest = ApplicationCommandRequest
     .builder()
     .name(name)
@@ -20,10 +26,10 @@ fun command(
     .build()
 
 @CommandDsl
-fun ImmutableApplicationCommandRequest.Builder.option(
+fun CommandRequestBuilder.option(
     type: OptionType,
-    builder: ImmutableApplicationCommandOptionData.Builder.() -> Unit
-): ImmutableApplicationCommandRequest.Builder = ApplicationCommandOptionData
+    builder: OptionDataBuilder.() -> Unit
+): CommandRequestBuilder = ApplicationCommandOptionData
     .builder()
     .type(type.value)
     .required(true)
@@ -32,7 +38,7 @@ fun ImmutableApplicationCommandRequest.Builder.option(
     .let(::addOption)
 
 @CommandDsl
-fun ImmutableApplicationCommandOptionData.Builder.optional(): ImmutableApplicationCommandOptionData.Builder =
+fun OptionDataBuilder.optional(): OptionDataBuilder =
     required(false)
 
 fun String.formatCapitalCase(): String = "[ _]"
@@ -44,7 +50,7 @@ fun String.formatCapitalCase(): String = "[ _]"
     }
 
 @CommandDsl
-inline fun <reified T : Enum<T>> ImmutableApplicationCommandOptionData.Builder.choices(): ImmutableApplicationCommandOptionData.Builder =
+inline fun <reified T : Enum<T>> OptionDataBuilder.choices(): OptionDataBuilder =
     enumValues<T>()
         .map {
             ApplicationCommandOptionChoiceData

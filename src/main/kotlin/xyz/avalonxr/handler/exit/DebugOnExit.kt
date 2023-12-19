@@ -6,8 +6,8 @@ import xyz.avalonxr.enums.ExitCode
 /**
  * @author Atri
  *
- * A derivative of [ApplicationExitHandler] which will do nothing except log the exit message at debug level. This limits
- * log output in all exit cases, however messages can still be seen when log level is set to DEBUG.
+ * A derivative of [ApplicationExitHandler] which will do nothing except log the exit message at debug level. This
+ * limits log output in all exit cases, however messages can still be seen when log level is set to DEBUG.
  */
 data object DebugOnExit : ApplicationExitHandler {
 

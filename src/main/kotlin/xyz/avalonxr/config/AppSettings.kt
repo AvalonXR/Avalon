@@ -8,8 +8,8 @@ import xyz.avalonxr.handler.exit.LogOnExit
 /**
  * @author Atri
  *
- * A configuration class which provides the list of base settings that this app requires to function. These are currently
- * specified in the application's `application.yml` file.
+ * A configuration class which provides the list of base settings that this app requires to function. These are
+ * currently specified in the application's `application.yml` file.
  */
 @Configuration
 data class AppSettings(
