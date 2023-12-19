@@ -1,9 +1,9 @@
 package xyz.avalonxr.enums
 
 import xyz.avalonxr.handler.exit.ApplicationExitHandler
+import xyz.avalonxr.handler.exit.DebugOnExit
 import xyz.avalonxr.handler.exit.ExceptionOnError
 import xyz.avalonxr.handler.exit.LogOnExit
-import xyz.avalonxr.handler.exit.DebugOnExit
 
 /**
  * @author Atri

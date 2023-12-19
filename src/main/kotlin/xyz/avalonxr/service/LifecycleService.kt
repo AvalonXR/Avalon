@@ -10,8 +10,8 @@ import xyz.avalonxr.enums.ExitHandlerStrategy
 /**
  * @author Atri
  *
- * A simple service meant to encapsulate calls to [SpringApplication.exit]. This can be used to shut down the application
- * gracefully, or abruptly in the event that a fatal error occurs or invalid state is reached.
+ * A simple service meant to encapsulate calls to [SpringApplication.exit]. This can be used to shut down the
+ * application gracefully, or abruptly in the event that a fatal error occurs or invalid state is reached.
  *
  * @property context The spring context for the application we want to terminate.
  * @property strategy The exit strategy to use before terminating the application. Can be of the following types: LOG,
@@ -34,5 +34,5 @@ class LifecycleService @Autowired constructor(
         vararg extras: Any?
     ): Nothing = SpringApplication
         .exit(context, { strategy.handler.handleExit(code, *extras) })
-        .let { throw Exception() } // Shouldn't reach this point
+        .let { throw Exception("Exiting Application") } // Shouldn't reach this point
 }

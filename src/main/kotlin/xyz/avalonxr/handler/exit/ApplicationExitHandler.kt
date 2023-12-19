@@ -17,9 +17,9 @@ import xyz.avalonxr.service.LifecycleService
 sealed interface ApplicationExitHandler : Handler {
 
     /**
-     * Handles an exit signal provided by [LifecycleService]. This function should perform any pre-process final operations
-     * before returning the exit code to spring. It should be expected that the application will be terminated shortly
-     * after this function is executed, if called in the context of [LifecycleService].
+     * Handles an exit signal provided by [LifecycleService]. This function should perform any pre-process final
+     * operations before returning the exit code to spring. It should be expected that the application will be
+     * terminated shortly after this function is executed, if called in the context of [LifecycleService].
      *
      * @param code The [ExitCode] signal to process.
      * @param extras Any extra values that may be useful to provide (typically for logging).

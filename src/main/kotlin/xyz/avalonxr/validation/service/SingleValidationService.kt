@@ -5,9 +5,9 @@ import xyz.avalonxr.validation.validator.SingleValidator
 /**
  * @author Atri
  *
- * A derivative type of [ValidationService] which validates a singleton input value [I] against a collection of validators
- * conforming to the provided type [T]. Any errors that are discovered in the structure of the provided value are returned
- * as instances of result type [R].
+ * A derivative type of [ValidationService] which validates a singleton input value [I] against a collection of
+ * validators conforming to the provided type [T]. Any errors that are discovered in the structure of the provided value
+ * are returned as instances of result type [R].
  *
  * @property I The object type we want to validate.
  * @property R The error type to return for validation errors.
