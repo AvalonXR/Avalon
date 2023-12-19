@@ -38,6 +38,18 @@ fun CommandRequestBuilder.option(
     .let(::addOption)
 
 @CommandDsl
+fun OptionDataBuilder.option(
+    type: OptionType,
+    builder: OptionDataBuilder.() -> Unit
+): OptionDataBuilder = ApplicationCommandOptionData
+    .builder()
+    .type(type.value)
+    .required(true)
+    .also(builder)
+    .build()
+    .let(::addOption)
+
+@CommandDsl
 fun OptionDataBuilder.optional(): OptionDataBuilder =
     required(false)
 
