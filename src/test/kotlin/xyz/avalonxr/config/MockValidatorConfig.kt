@@ -2,14 +2,22 @@ package xyz.avalonxr.config
 
 import io.mockk.every
 import io.mockk.mockk
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
+import xyz.avalonxr.enums.ExitHandlerStrategy
 import xyz.avalonxr.validation.validator.MockValidator
 
 @Configuration
 @ActiveProfiles("test")
-class MockValidatorConfig {
+class MockValidatorConfig @Autowired constructor(
+    private val appSettings: AppSettings
+) {
+
+    @Bean
+    fun exitStrategy(): ExitHandlerStrategy =
+        appSettings.exitStrategy
 
     @Bean
     fun validatorOne(): MockValidator = mockk {
