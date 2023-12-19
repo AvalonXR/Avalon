@@ -85,23 +85,23 @@ class CommandDslSpec : DescribeSpec({
                 command.description().get() shouldBe "Hello world!"
             }
 
-            it("Should have one option") {
+            it("Should have three options") {
                 command.options().get() shouldHaveSize 3
             }
 
-            it("Should have the correct option type") {
+            it("Should have the correct option types") {
                 command.options().get()[0].type() shouldBe OptionType.STRING.value
                 command.options().get()[1].type() shouldBe OptionType.UNKNOWN.value
                 command.options().get()[2].type() shouldBe OptionType.USER.value
             }
 
-            it("Should have the correct option name") {
+            it("Should have the correct option names") {
                 command.options().get()[0].name() shouldBe "Test"
                 command.options().get()[1].name() shouldBe "Test 2"
                 command.options().get()[2].name() shouldBe "Test 3"
             }
 
-            it("Should have the correct option description") {
+            it("Should have the correct option descriptions") {
                 command.options().get()[0].description() shouldBe "Enter text here"
                 command.options().get()[1].description() shouldBe "Enter whatever here?"
                 command.options().get()[2].description() shouldBe "Enter some user here"
@@ -125,7 +125,7 @@ class CommandDslSpec : DescribeSpec({
                 command.description().toOptional().shouldBeEmpty()
             }
 
-            it("Should have one option") {
+            it("Should have no options") {
                 command.options().toOptional().shouldBeEmpty()
             }
         }
@@ -166,6 +166,74 @@ class CommandDslSpec : DescribeSpec({
                 command.options().get().first().choices().get()
                     .map(ApplicationCommandOptionChoiceData::value)
                     .shouldContainInOrder(Example.entries.map(Example::name))
+            }
+        }
+
+        describe("Command with subcommand groups and subcommands") {
+            val command = command("Foo") {
+                description("Foo command")
+
+                option(OptionType.SUB_COMMAND_GROUP) {
+                    name("Bar")
+                    description("Bar subcommand group")
+
+                    option(OptionType.SUB_COMMAND) {
+                        name("Qux")
+                        description("Qux subcommand")
+                    }
+
+                    option(OptionType.SUB_COMMAND) {
+                        name("Quux")
+                        description("Quux subcommand")
+                    }
+                }
+
+                option(OptionType.SUB_COMMAND_GROUP) {
+                    name("Baz")
+                    description("Baz subcommand group")
+
+                    option(OptionType.SUB_COMMAND) {
+                        name("Qux")
+                        description("Qux subcommand")
+                    }
+
+                    option(OptionType.SUB_COMMAND) {
+                        name("Quux")
+                        description("Quux subcommand")
+                    }
+                }
+            }
+
+            it("Should have two subcommand groups") {
+                command.options().get()
+                    .filter { it.type() == OptionType.SUB_COMMAND_GROUP.value }
+                    .shouldHaveSize(2)
+            }
+
+            it("Should require the use of either subcommand group") {
+                command.options().get()
+                    .filter { it.type() == OptionType.SUB_COMMAND_GROUP.value }
+                    .shouldForAll { it.required().get().shouldBeTrue() }
+            }
+
+            it("The first group should have 2 subcommands and require either") {
+                command.options().get()[0].options().get()
+                    .filter { it.type() == OptionType.SUB_COMMAND.value }
+                    .shouldHaveSize(2)
+                    .shouldForAll { it.required().get().shouldBeTrue() }
+            }
+
+            it("The second group should have 2 subcommands and require either") {
+                command.options().get()[1].options().get()
+                    .filter { it.type() == OptionType.SUB_COMMAND.value }
+                    .shouldHaveSize(2)
+                    .shouldForAll { it.required().get().shouldBeTrue() }
+            }
+
+            it("Command options list should contain only subcommand groups") {
+                command.options().get()
+                    .shouldForAll { it.type() shouldBe OptionType.SUB_COMMAND_GROUP.value }
+                    .shouldHaveSize(2)
             }
         }
     }
