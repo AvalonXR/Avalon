@@ -2,9 +2,7 @@ package xyz.avalonxr.dsl.discord
 
 import discord4j.core.spec.EmbedCreateFields
 import discord4j.core.spec.EmbedCreateSpec
-
-@DslMarker
-annotation class EmbedDsl
+import xyz.avalonxr.annotations.dsl.EmbedDsl
 
 @EmbedDsl
 fun embed(builder: EmbedCreateSpec.Builder.() -> Unit): EmbedCreateSpec = EmbedCreateSpec

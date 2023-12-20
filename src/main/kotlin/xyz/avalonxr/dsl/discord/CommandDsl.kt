@@ -5,9 +5,7 @@ import discord4j.discordjson.json.ApplicationCommandOptionData
 import discord4j.discordjson.json.ApplicationCommandRequest
 import discord4j.discordjson.json.ImmutableApplicationCommandOptionData
 import discord4j.discordjson.json.ImmutableApplicationCommandRequest
-
-@DslMarker
-annotation class CommandDsl
+import xyz.avalonxr.annotations.dsl.CommandDsl
 
 typealias CommandRequestBuilder =
     ImmutableApplicationCommandRequest.Builder
@@ -73,7 +71,7 @@ inline fun <reified T : Enum<T>> OptionDataBuilder.choices(): OptionDataBuilder 
         }
         .let { addAllChoices(it) }
 
-@EmbedDsl
+@CommandDsl
 @Suppress("unused")
 enum class OptionType(val value: Int) {
 
