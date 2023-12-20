@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
-import xyz.avalonxr.enums.ExitHandlerStrategy
+import xyz.avalonxr.enums.ExitStrategy
 import xyz.avalonxr.validation.validator.MockValidator
 
 @Configuration
@@ -16,7 +16,7 @@ class MockValidatorConfig @Autowired constructor(
 ) {
 
     @Bean
-    fun exitStrategy(): ExitHandlerStrategy =
+    fun exitStrategy(): ExitStrategy =
         appSettings.exitStrategy
 
     @Bean

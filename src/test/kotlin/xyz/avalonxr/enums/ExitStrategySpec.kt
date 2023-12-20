@@ -12,20 +12,20 @@ import xyz.avalonxr.config.AppSettings
 @SpringBootTest
 @ActiveProfiles("test")
 @Import(AppSettings::class)
-class ExitHandlerStrategySpec(
-    private val exitHandlerStrategy: ExitHandlerStrategy
+class ExitStrategySpec(
+    private val exitHandlerStrategy: ExitStrategy
 ) : DescribeSpec({
 
     extensions(SpringTestExtension())
 
-    describe("ExitHandlerStrategy Tests") {
+    describe("ExitStrategy Tests") {
 
         it("Should provide an exit handler strategy") {
             exitHandlerStrategy.shouldNotBeNull()
         }
 
         it("Should have the correct strategy") {
-            exitHandlerStrategy shouldBe ExitHandlerStrategy.DEBUG
+            exitHandlerStrategy shouldBe ExitStrategy.DEBUG
         }
     }
 })

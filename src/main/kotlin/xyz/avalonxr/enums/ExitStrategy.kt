@@ -17,22 +17,20 @@ import xyz.avalonxr.handler.exit.LogOnExit
  * @see DebugOnExit
  */
 @Suppress("unused")
-enum class ExitHandlerStrategy(
-    val handler: ApplicationExitHandler
-) {
+enum class ExitStrategy {
 
     /**
      * Log exit as INFO or ERROR for each shutdown signal corresponding to if the exit code maps to an error.
      */
-    LOG(LogOnExit),
+    LOG,
 
     /**
      * Throw an exception whenever a shutdown signal mapping to an error code is received.
      */
-    EXCEPTION(ExceptionOnError),
+    EXCEPTION,
 
     /**
      * Silently log all shutdown signals at DEBUG level.
      */
-    DEBUG(DebugOnExit),
+    DEBUG,
 }
