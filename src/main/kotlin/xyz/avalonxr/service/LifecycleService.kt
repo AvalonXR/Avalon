@@ -5,7 +5,8 @@ import org.springframework.boot.SpringApplication
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Service
 import xyz.avalonxr.enums.ExitCode
-import xyz.avalonxr.enums.ExitHandlerStrategy
+import xyz.avalonxr.enums.ExitStrategy
+import xyz.avalonxr.provider.ExitStrategyHandleProvider
 
 /**
  * @author Atri
@@ -20,11 +21,11 @@ import xyz.avalonxr.enums.ExitHandlerStrategy
 @Service
 class LifecycleService @Autowired constructor(
     private val context: ApplicationContext,
-    private val strategy: ExitHandlerStrategy
+    private val strategy: ExitStrategyHandleProvider
 ) {
 
     /**
-     * Shuts down the application and calls the provided [ExitHandlerStrategy].
+     * Shuts down the application and calls the provided [ExitStrategy].
      *
      * @param code The exit code to set our shutdown by.
      * @param extras Any values that we would like to include in our exit code's log message.
@@ -33,6 +34,6 @@ class LifecycleService @Autowired constructor(
         code: ExitCode = ExitCode.OK,
         vararg extras: Any?
     ): Nothing = SpringApplication
-        .exit(context, { strategy.handler.handleExit(code, *extras) })
+        .exit(context, { strategy.provide().handleExit(code, *extras) })
         .let { throw Exception("Exiting Application") } // Shouldn't reach this point
 }

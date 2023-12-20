@@ -2,7 +2,7 @@ package xyz.avalonxr.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
-import xyz.avalonxr.enums.ExitHandlerStrategy
+import xyz.avalonxr.enums.ExitStrategy
 import xyz.avalonxr.handler.exit.LogOnExit
 
 /**
@@ -19,5 +19,5 @@ data class AppSettings(
      * [LogOnExit] should the config value not be provided, or considered invalid.
      */
     @Value("\${avalon.exit.strategy:LOG}")
-    val exitStrategy: ExitHandlerStrategy
+    val exitStrategy: ExitStrategy
 )
