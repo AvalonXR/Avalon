@@ -11,6 +11,8 @@ style:
     active: false
   MaxLineLength:
     maxLineLength: 120
+  TrailingWhitespace:
+    active: true
 
 exceptions:
   TooGenericExceptionThrown:
