@@ -2,9 +2,9 @@ name: Verify PR
 
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
   pull_request:
-    branches: [main]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -12,10 +12,11 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - name: Setup JDK
-      - uses: actions/setup-java@v4
+        uses: actions/setup-java@v4
         with:
           distribution: corretto
           java-version: 21
