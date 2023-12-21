@@ -13,7 +13,14 @@ style:
     maxLineLength: 120
   TrailingWhitespace:
     active: true
+  ReturnCount:
+    active: false
+  UnusedPrivateMember:
+    active: false
 
+naming:
+  FunctionParameterNaming:
+    parameterPattern: _?[a-z][A-Za-z0-9]*
 exceptions:
   TooGenericExceptionThrown:
     active: false

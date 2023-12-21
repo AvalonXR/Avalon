@@ -3,17 +3,17 @@ package xyz.avalonxr.data
 import xyz.avalonxr.data.error.AvalonError
 
 class CommandResult private constructor(
-    val error: AvalonError? = null
-) {
-    fun isError(): Boolean =
-        error != null
+    error: AvalonError? = null,
+) : Payload<AvalonError>(error) {
+
+    fun isError(): Boolean = data != null
 
     companion object {
 
-        fun ofSuccess(): CommandResult =
+        fun success(): CommandResult =
             CommandResult()
 
-        fun ofFailure(
+        fun failure(
             error: AvalonError
         ) = CommandResult(error)
     }
