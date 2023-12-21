@@ -19,5 +19,12 @@ data class AppSettings(
      * [LogOnExit] should the config value not be provided, or considered invalid.
      */
     @Value("\${avalon.exit.strategy:LOG}")
-    val exitStrategy: ExitStrategy
+    val exitStrategy: ExitStrategy,
+
+    /**
+     * The token associated with the bot account we want our application to log into. This token being present is
+     * necessary for the application to function.
+     */
+    @Value("\${discord.token:}")
+    val discordClientToken: String,
 )

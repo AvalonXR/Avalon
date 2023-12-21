@@ -1,0 +1,8 @@
+spring:
+  main:
+    keep-alive: true
+avalon:
+  exit:
+    strategy: LOG
+discord:
+  token: # TOKEN GOES HERE
