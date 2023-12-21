@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import xyz.avalonxr.enums.ExitCode
 import xyz.avalonxr.enums.ExitStrategy
 import xyz.avalonxr.provider.ExitStrategyHandleProvider
+import kotlin.system.exitProcess
 
 /**
  * @author Atri
@@ -35,5 +36,5 @@ class LifecycleService @Autowired constructor(
         vararg extras: Any?
     ): Nothing = SpringApplication
         .exit(context, { strategy.provide().handleExit(code, *extras) })
-        .let { throw Exception("Exiting Application") } // Shouldn't reach this point
+        .let { exitProcess(code.code) }
 }
