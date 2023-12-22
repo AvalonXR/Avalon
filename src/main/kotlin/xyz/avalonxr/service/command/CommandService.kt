@@ -2,6 +2,8 @@ package xyz.avalonxr.service.command
 
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
 import discord4j.core.`object`.command.ApplicationCommandInteractionOption
+import discord4j.core.spec.InteractionApplicationCommandCallbackSpec
+import discord4j.rest.util.Color
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.event.ApplicationStartedEvent
@@ -9,10 +11,14 @@ import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import xyz.avalonxr.data.CommandResult
 import xyz.avalonxr.data.OptionStore
+import xyz.avalonxr.data.OptionValue
 import xyz.avalonxr.data.error.CommandError
+import xyz.avalonxr.data.error.CommonError
+import xyz.avalonxr.dsl.discord.embed
 import xyz.avalonxr.enums.ExitCode
 import xyz.avalonxr.models.discord.Command
 import xyz.avalonxr.service.LifecycleService
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class CommandService @Autowired constructor(
@@ -29,13 +35,13 @@ class CommandService @Autowired constructor(
         // Todo: We likely should have this divert to a non-command default handler
         val command = commandCache[commandName]
             ?: return CommandResult.failure(CommandError.CommandNotFound(commandName))
-        // Collect command context data, TODO we may want to change this to encapsulate things in a data class
-        val user = event.interaction.user
-        val guildId = event.interaction.guildId.orElse(null)
+        // Collect command option data
         val options = event.options.toOptionStore()
         // Run command logic with context
-        logger.info("Command '$commandName' executed by ${user.username}")
-        return command.processCommand(event, user, guildId, options)
+        logger.info("Command '$commandName' executed by ${event.interaction.user.username}")
+        return runCatching { command.processCommand(event, options) }
+            .onFailure { defaultHandler(event, it) }
+            .getOrDefault(CommandResult.failure(CommonError.GeneralError))
     }
 
     fun findCommandByName(name: String): Command? = commandCache[name]
@@ -51,9 +57,34 @@ class CommandService @Autowired constructor(
     // While this likely isn't an immediate issue, I don't think this currently
     // handles subcommands or groups correctly. We should evaluate this later on.
     private fun List<ApplicationCommandInteractionOption>.toOptionStore(): OptionStore = this
-        .map { it.name to it.value }
+        .mapNotNull(::processToPair)
         .toTypedArray()
         .let { OptionStore(*it) }
+
+    private fun processToPair(value: ApplicationCommandInteractionOption): Pair<String, OptionValue>? = value
+        .value
+        .getOrNull()
+        ?.let { value.name to OptionValue(it, value.type) }
+
+    private fun defaultHandler(
+        event: ChatInputInteractionEvent,
+        exception: Throwable?
+    ): CommandResult {
+        val embed = embed {
+            color(Color.RED)
+            title("⚠️ Error 500")
+            description("Whoops! Looks like an error occurred running that command. Try again later!")
+        }
+        exception?.printStackTrace()
+        event
+            .reply(
+                InteractionApplicationCommandCallbackSpec.create()
+                    .withEmbeds(embed)
+                    .withEphemeral(true)
+            )
+            .subscribe()
+        return CommandResult.failure(CommonError.GeneralError)
+    }
 
     private fun initialize(): Map<String, Command> {
         logger.info("Starting command service...")
@@ -69,7 +100,7 @@ class CommandService @Autowired constructor(
         }
         // Cache validated commands into list
         return commands
-            .associateBy { it.getCommandDescriptor().name() }
+            .associateBy { it.getBinding().request.name() }
             .also { logger.info("Command service ready! Registered commands: ${it.keys}") }
     }
 

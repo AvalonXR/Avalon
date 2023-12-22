@@ -19,7 +19,7 @@ class CheckForDuplicates : CommandValidator {
         val duplicates = mutableSetOf<String>()
 
         for (value in values) {
-            val name = value.getCommandDescriptor().name()
+            val name = value.getBinding().request.name()
 
             if (name in visited) {
                 duplicates.add(name)
