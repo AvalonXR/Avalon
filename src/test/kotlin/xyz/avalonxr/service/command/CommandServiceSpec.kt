@@ -97,7 +97,7 @@ class CommandServiceSpec : DescribeSpec({
                 }
 
                 it("Should be a success result") {
-                    result?.getCommandDescriptor()?.name() shouldBe "foo"
+                    result?.getBinding()!!.request.name() shouldBe "foo"
                 }
             }
 
@@ -138,7 +138,7 @@ class CommandServiceSpec : DescribeSpec({
                 }
 
                 it("Should be a success result") {
-                    result[0].getCommandDescriptor().name() shouldBe "foo"
+                    result[0].getBinding().request.name() shouldBe "foo"
                 }
             }
 
@@ -179,7 +179,7 @@ class CommandServiceSpec : DescribeSpec({
                 }
 
                 it("Should be a success result") {
-                    result[0].getCommandDescriptor().name() shouldBe "foo"
+                    result[0].getBinding().request.name() shouldBe "foo"
                 }
             }
 
