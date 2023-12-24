@@ -6,8 +6,6 @@ import discord4j.core.spec.InteractionApplicationCommandCallbackSpec
 import discord4j.rest.util.Color
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.event.ApplicationStartedEvent
-import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import xyz.avalonxr.data.CommandResult
 import xyz.avalonxr.data.OptionStore
@@ -15,6 +13,7 @@ import xyz.avalonxr.data.OptionValue
 import xyz.avalonxr.data.error.CommandError
 import xyz.avalonxr.data.error.CommonError
 import xyz.avalonxr.dsl.discord.embed
+import xyz.avalonxr.enums.CommandScope
 import xyz.avalonxr.enums.ExitCode
 import xyz.avalonxr.models.discord.Command
 import xyz.avalonxr.service.LifecycleService
@@ -51,8 +50,15 @@ class CommandService @Autowired constructor(
         .values
         .toList()
 
-    @EventListener(ApplicationStartedEvent::class)
-    fun getAllCommands(): List<Command> = commandCache.values.toList()
+    fun getAllCommands(): List<Command> = commandCache
+        .values
+        .toList()
+
+    fun hasGlobalCommand(name: String): Boolean = commandCache[name]
+        ?.takeIf { it.getBinding().scope == CommandScope.GLOBAL } != null
+
+    fun hasGuildCommand(name: String): Boolean = commandCache[name]
+        ?.takeIf { it.getBinding().scope == CommandScope.GUILD } != null
 
     // While this likely isn't an immediate issue, I don't think this currently
     // handles subcommands or groups correctly. We should evaluate this later on.

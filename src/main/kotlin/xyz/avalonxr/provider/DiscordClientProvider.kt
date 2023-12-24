@@ -26,6 +26,13 @@ class DiscordClientProvider @Autowired constructor(
 ) : Provider<GatewayDiscordClient> {
     private var discordClient: GatewayDiscordClient? = null
 
+    /**
+     * Provides the app's ID. We do not expect this to change once this is generated.
+     */
+    val appId: Long by lazy {
+        provide().restClient.applicationId.block() ?: -1
+    }
+
     override fun provide(): GatewayDiscordClient {
         // Generate the discord client when requested, if one does not already exist
         if (discordClient == null) {
