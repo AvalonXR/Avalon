@@ -7,4 +7,4 @@ avalon:
   exit:
     strategy: LOG
 discord:
-  token: # TOKEN GOES HERE
+  token: ${discordToken}
