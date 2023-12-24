@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: prod
   main:
     keep-alive: true
 avalon:

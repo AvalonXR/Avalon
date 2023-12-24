@@ -1,5 +1,6 @@
 package xyz.avalonxr.service.command
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import xyz.avalonxr.data.error.ValidationError
@@ -18,4 +19,18 @@ import xyz.avalonxr.validation.validator.command.CommandValidator
 @Service
 class CommandValidationService @Autowired constructor(
     override val validators: List<CommandValidator>
-) : MultiValidationService<Command, ValidationError, CommandValidator>
+) : MultiValidationService<Command, ValidationError, CommandValidator> {
+
+    override fun validate(values: List<Command>): List<ValidationError> {
+        logger.info("Starting command validation...")
+        val result = super.validate(values)
+        logger.info("Commands processed")
+        return result
+    }
+
+    companion object {
+
+        private val logger = LoggerFactory
+            .getLogger(CommandValidationService::class.java)
+    }
+}
