@@ -44,6 +44,7 @@ class DiscordBindingService @Autowired constructor(
             .getAllCommands()
             .map { it.getBinding().request.name() }
         logger.info("Binding service ready! Commands bound: $commands")
+        logger.info("Please give Discord a few minutes to an hour to reflect any command changes")
     }
 
     private fun deleteStaleBindings() {

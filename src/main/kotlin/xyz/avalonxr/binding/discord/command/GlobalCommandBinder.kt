@@ -31,6 +31,11 @@ class GlobalCommandBinder @Autowired constructor(
     }
 
     override fun bind(commands: List<Command>) {
+        if (commands.isEmpty()) {
+            logger.info("No commands to bind in global command scope")
+            return
+        }
+
         logger.info("Overwriting bindings for provided commands in global command scope")
         commands
             .map { it.getBinding().request }
