@@ -60,4 +60,21 @@ class OptionStore(
             .onFailure { throw InvalidOptionTypeMappingException(name, type, typeOf<T>()) }
             .getOrNull()
     }
+
+    /**
+     * Finds a field present within the given [OptionStore] instance, mapping it to the requested type [T] if present.
+     * This function may in some circumstances throw an exception deriving from [AvalonException] depending on if the
+     * requested type is not supported or incorrectly mapped.
+     *
+     * @throws UnsupportedOptionTypeException When the requested type does not conform to any supported return types.
+     * @throws InvalidOptionTypeMappingException When the field type differs from the type requested.
+     *
+     * @return The corresponding field value mapped to type [T], or [default] if no value is present.
+     */
+    @Throws(UnsupportedOptionTypeException::class, InvalidOptionTypeMappingException::class)
+    inline fun <reified T : Any> getOrDefault(
+        name: String,
+        default: T
+    ): T = findByName<T>(name)
+        ?: default
 }

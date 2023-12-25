@@ -33,8 +33,7 @@ class PingCommand : Command {
         options: OptionStore
     ): CommandResult {
         val text = options
-            .findByName<String>("text")
-            ?: "Pong!"
+            .getOrDefault<String>("text", "Pong!")
 
         source.reply(text)
             .withEphemeral(true)
