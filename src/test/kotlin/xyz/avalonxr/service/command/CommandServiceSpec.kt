@@ -15,6 +15,7 @@ import xyz.avalonxr.data.CommandResult
 import xyz.avalonxr.data.error.CommandError
 import xyz.avalonxr.data.error.ValidationError
 import xyz.avalonxr.fixtures.discord.ChatInputInteractionEventFixture
+import xyz.avalonxr.handler.command.AvalonDefaultCommandHandler
 import xyz.avalonxr.models.discord.Command
 import xyz.avalonxr.models.discord.TestCommand
 import xyz.avalonxr.service.LifecycleService
@@ -33,6 +34,7 @@ class CommandServiceSpec : DescribeSpec({
         val lifecycleService = mockk<LifecycleService> {
             every { shutdown(any(), *anyVararg()) } throws RuntimeException("Exited")
         }
+        val defaultHandler = AvalonDefaultCommandHandler()
         val event = ChatInputInteractionEventFixture.make()
         val failEvent = ChatInputInteractionEventFixture.make(
             _commandName = "bar"
@@ -40,7 +42,8 @@ class CommandServiceSpec : DescribeSpec({
         val service = CommandService(
             commands,
             validatorService,
-            lifecycleService
+            lifecycleService,
+            defaultHandler,
         )
 
         describe("processCommand") {
