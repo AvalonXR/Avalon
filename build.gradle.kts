@@ -1,6 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
-import org.jetbrains.kotlin.config.JvmTarget
 
 plugins {
     alias(libs.plugins.boot)
@@ -8,6 +7,7 @@ plugins {
     alias(libs.plugins.detekt)
     kotlin("jvm") version libs.versions.kotlin
     kotlin("plugin.spring") version libs.versions.kotlin
+    kotlin("plugin.jpa") version libs.versions.kotlin
 }
 
 group = "xyz.avalonxr"
@@ -28,6 +28,7 @@ dependencies {
     implementation(libs.discord)
     implementation(libs.bundles.spring)
 
+    runtimeOnly(libs.h2.database)
     // Unit testing support
     testImplementation(libs.bundles.testing)
 }
