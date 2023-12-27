@@ -3,6 +3,17 @@ spring:
     active: prod
   main:
     keep-alive: true
+  jpa:
+    database: Avalon
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+  datasource:
+    platform: postgres
+    url: ${dbAddress}
+    username: ${dbUsername}
+    password: ${dbPassword}
+    driverClassName: org.postgresql.Driver
 avalon:
   exit:
     strategy: LOG
