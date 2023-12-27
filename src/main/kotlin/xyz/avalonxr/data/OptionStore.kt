@@ -1,6 +1,8 @@
 package xyz.avalonxr.data
 
 import discord4j.common.util.Snowflake
+import discord4j.core.`object`.command.ApplicationCommandInteractionOption
+import discord4j.core.`object`.command.ApplicationCommandOption
 import discord4j.core.`object`.entity.Attachment
 import discord4j.core.`object`.entity.Role
 import discord4j.core.`object`.entity.User
@@ -9,6 +11,7 @@ import xyz.avalonxr.exception.AvalonException
 import xyz.avalonxr.exception.InvalidOptionTypeMappingException
 import xyz.avalonxr.exception.UnsupportedOptionTypeException
 import kotlin.jvm.Throws
+import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.typeOf
 
 /**
@@ -20,7 +23,8 @@ import kotlin.reflect.typeOf
  * @param options A collection of all fields associated with a command's execution.
  */
 class OptionStore(
-    vararg options: Pair<String, OptionValue>
+    vararg options: Pair<String, OptionValue>,
+    val subCommand: String? = null,
 ) : Map<String, OptionValue> by mapOf(*options) {
 
     /**
@@ -77,4 +81,45 @@ class OptionStore(
         default: T
     ): T = findByName<T>(name)
         ?: default
+
+    companion object {
+
+        /**
+         * Converts an [ApplicationCommandInteractionOption] list to an instance of [OptionStore]. This will map command
+         * options to a flat storage map, regardless of if it's a subcommand or root command store. This will simplify
+         * access to values passed into the command, making it easier to write command logic without relying on
+         * significant amounts of boilerplate code. The corresponding subcommand will be provided via the [subCommand]
+         * field, if present, to help with command routing.
+         *
+         * @param options The command option list that we want to process.
+         *
+         * @return An option store containing values for the most relevant command or subcommand.
+         */
+        fun toOptionStore(options: List<ApplicationCommandInteractionOption>): OptionStore {
+            val sub = options
+                .firstOrNull { it.type == ApplicationCommandOption.Type.SUB_COMMAND }
+
+            if (sub != null) {
+                return toOptionStoreWithSubCommand(sub.options, sub.name)
+            }
+
+            return options
+                .mapNotNull(::processToPair)
+                .toTypedArray()
+                .let { OptionStore(*it) }
+        }
+
+        private fun toOptionStoreWithSubCommand(
+            subOptions: List<ApplicationCommandInteractionOption>,
+            subCommand: String? = null,
+        ): OptionStore = subOptions
+            .mapNotNull(::processToPair)
+            .toTypedArray()
+            .let { OptionStore(*it, subCommand = subCommand) }
+
+        private fun processToPair(value: ApplicationCommandInteractionOption): Pair<String, OptionValue>? = value
+            .value
+            .getOrNull()
+            ?.let { value.name to OptionValue(it, value.type) }
+    }
 }
