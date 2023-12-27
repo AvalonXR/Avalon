@@ -16,7 +16,7 @@ typealias OptionDataBuilder =
 @CommandDsl
 fun command(
     name: String,
-    builder: CommandRequestBuilder.() -> Unit = {}
+    builder: CommandRequestBuilder.() -> Unit = {},
 ): ApplicationCommandRequest = ApplicationCommandRequest
     .builder()
     .name(name)
@@ -26,7 +26,7 @@ fun command(
 @CommandDsl
 fun CommandRequestBuilder.option(
     type: OptionType,
-    builder: OptionDataBuilder.() -> Unit
+    builder: OptionDataBuilder.() -> Unit,
 ): CommandRequestBuilder = ApplicationCommandOptionData
     .builder()
     .type(type.value)
@@ -36,9 +36,19 @@ fun CommandRequestBuilder.option(
     .let(::addOption)
 
 @CommandDsl
+fun CommandRequestBuilder.subCommand(
+    builder: OptionDataBuilder.() -> Unit,
+): CommandRequestBuilder = ApplicationCommandOptionData
+    .builder()
+    .type(OptionType.SUB_COMMAND.value)
+    .also(builder)
+    .build()
+    .let(::addOption)
+
+@CommandDsl
 fun OptionDataBuilder.option(
     type: OptionType,
-    builder: OptionDataBuilder.() -> Unit
+    builder: OptionDataBuilder.() -> Unit,
 ): OptionDataBuilder = ApplicationCommandOptionData
     .builder()
     .type(type.value)
@@ -97,5 +107,5 @@ enum class OptionType(val value: Int) {
 
     NUMBER(10),
 
-    ATTACHMENT(11)
+    ATTACHMENT(11),
 }
