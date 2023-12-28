@@ -8,22 +8,18 @@ import xyz.avalonxr.data.CommandResult
 import xyz.avalonxr.data.error.CommandError
 import xyz.avalonxr.dsl.discord.embed
 import xyz.avalonxr.utils.replyWithEmbed
-import xyz.avalonxr.utils.sendMessage
+import xyz.avalonxr.utils.sendReply
 
 @Component
 class AvalonDefaultCommandHandler : DefaultCommandHandler {
 
     override fun afterExecution(event: ChatInputInteractionEvent, result: CommandResult) {
         // Do not respond again if the command has already provided a reply
-        if (event.reply.block() == null) {
-            return
-        }
-
         val message = result.data
             ?.message
             ?: "Command executed successfully!"
 
-        event.sendMessage(message)
+        event.sendReply(message)
     }
 
     override fun commandNotFound(
@@ -33,7 +29,7 @@ class AvalonDefaultCommandHandler : DefaultCommandHandler {
         val message = CommandError
             .CommandNotFound(command)
 
-        event.sendMessage(message.message)
+        event.sendReply(message.message)
 
         return message
             .let(CommandResult::failure)
