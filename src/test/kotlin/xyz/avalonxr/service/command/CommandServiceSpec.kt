@@ -8,8 +8,11 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import xyz.avalonxr.data.CommandResult
 import xyz.avalonxr.data.error.CommandError
@@ -34,7 +37,10 @@ class CommandServiceSpec : DescribeSpec({
         val lifecycleService = mockk<LifecycleService> {
             every { shutdown(any(), *anyVararg()) } throws RuntimeException("Exited")
         }
-        val defaultHandler = AvalonDefaultCommandHandler()
+        val defaultHandler = spyk(AvalonDefaultCommandHandler()) {
+            every { afterExecution(any(), any()) } just Runs
+            every { commandNotFound(any(), any()) } returns CommandResult.failure(CommandError.CommandNotFound("foo"))
+        }
         val event = ChatInputInteractionEventFixture.make()
         val failEvent = ChatInputInteractionEventFixture.make(
             _commandName = "bar"

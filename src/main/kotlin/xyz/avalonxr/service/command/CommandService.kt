@@ -35,6 +35,7 @@ class CommandService @Autowired constructor(
         return runCatching { command.processCommand(event, options) }
             .onFailure { defaultCommandHandler.commandFailed(event, commandName, it) }
             .getOrDefault(CommandResult.failure(CommonError.GeneralError))
+            .also { defaultCommandHandler.afterExecution(event, it) }
     }
 
     fun findCommandByName(name: String): Command? = commandCache[name]
