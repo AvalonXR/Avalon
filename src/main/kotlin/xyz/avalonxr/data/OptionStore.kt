@@ -6,7 +6,14 @@ import discord4j.core.`object`.command.ApplicationCommandOption
 import discord4j.core.`object`.entity.Attachment
 import discord4j.core.`object`.entity.Role
 import discord4j.core.`object`.entity.User
+import discord4j.core.`object`.entity.channel.Category
 import discord4j.core.`object`.entity.channel.Channel
+import discord4j.core.`object`.entity.channel.MessageChannel
+import discord4j.core.`object`.entity.channel.NewsChannel
+import discord4j.core.`object`.entity.channel.PrivateChannel
+import discord4j.core.`object`.entity.channel.StoreChannel
+import discord4j.core.`object`.entity.channel.TextChannel
+import discord4j.core.`object`.entity.channel.VoiceChannel
 import xyz.avalonxr.exception.AvalonException
 import xyz.avalonxr.exception.InvalidOptionTypeMappingException
 import xyz.avalonxr.exception.UnsupportedOptionTypeException
@@ -81,6 +88,19 @@ class OptionStore(
         default: T
     ): T = findByName<T>(name)
         ?: default
+
+    /**
+     * Finds a channel by a given subtype of [Channel]. This is useful in the instance that we need a specific type of
+     * channel for part of our application's processes. We recommend using this for the following types: [Category],
+     * [VoiceChannel], [StoreChannel], [TextChannel], [NewsChannel], or [PrivateChannel]. [MessageChannel] may be used
+     * if you want to accept any text channel.
+     *
+     * @param name The name of the property to retrieve.
+     *
+     * @return The channel corresponding to the name of the option, or null if the channel isn't present or unable to
+     * be cast to the provided type.
+     */
+    inline fun <reified T : Channel> findChannel(name: String): T? = findByName<Channel>(name) as? T
 
     companion object {
 
