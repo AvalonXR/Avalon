@@ -32,11 +32,12 @@ fun ChatInputInteractionEvent.replyWithEmbed(
  * @param message The message to send to the corresponding user
  * @param ephemeral Whether the embed given is only visible to the event caller or everyone.
  */
-fun ChatInputInteractionEvent.sendMessage(
+fun ChatInputInteractionEvent.sendReply(
     message: String,
     ephemeral: Boolean = true,
 ) {
     reply(message)
         .withEphemeral(ephemeral)
+        .onErrorComplete()
         .subscribe()
 }
