@@ -23,3 +23,20 @@ fun ChatInputInteractionEvent.replyWithEmbed(
     .withEmbeds(embed)
     .withEphemeral(ephemeral)
     .let(::reply)
+
+/**
+ * @author Atri
+ *
+ * A utility function that sends a reply to the sender of a command.
+ *
+ * @param message The message to send to the corresponding user
+ * @param ephemeral Whether the embed given is only visible to the event caller or everyone.
+ */
+fun ChatInputInteractionEvent.sendMessage(
+    message: String,
+    ephemeral: Boolean = true,
+) {
+    reply(message)
+        .withEphemeral(ephemeral)
+        .subscribe()
+}
