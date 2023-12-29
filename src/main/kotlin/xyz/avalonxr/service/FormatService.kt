@@ -32,7 +32,7 @@ class FormatService @Autowired constructor(
         var current = input
         formatters
             .forEach { current = it.formatWithContext(event, current) }
-        return input
+        return current
     }
 
     companion object {
