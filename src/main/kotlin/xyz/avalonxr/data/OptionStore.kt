@@ -97,10 +97,19 @@ class OptionStore(
      *
      * @param name The name of the property to retrieve.
      *
-     * @return The channel corresponding to the name of the option, or null if the channel isn't present or unable to
-     * be cast to the provided type.
+     * @return The channel corresponding to the name of the option, or invalid if the channel isn't matched to the given
+     * type, or empty if the [name] given does not match any field in the option store.
      */
-    inline fun <reified T : Channel> findChannel(name: String): T? = findByName<Channel>(name) as? T
+    inline fun <reified T : Channel> findChannel(name: String): ValidatedOptional<T> {
+        if (name !in this) {
+            return ValidatedOptional.Empty()
+        }
+
+        return when (val result = findByName<Channel>(name) as? T) {
+            null -> ValidatedOptional.Invalid()
+            else -> ValidatedOptional.Valid(result)
+        }
+    }
 
     companion object {
 
