@@ -19,4 +19,11 @@ interface WelcomeMessageRepository : CrudRepository<WelcomeMessage, Long> {
      * @return An entry matching the given [guildId] or empty if not present in the database.
      */
     fun findByGuildId(guildId: Long): Optional<WelcomeMessage>
+
+    /**
+     * Deletes entities by guild id.
+     *
+     * @param guildId The guild id for the welcome message we want to delete.
+     */
+    fun deleteByGuildId(guildId: Long)
 }
