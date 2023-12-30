@@ -2,6 +2,7 @@ package xyz.avalonxr.command
 
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
 import discord4j.core.`object`.entity.channel.TextChannel
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import xyz.avalonxr.annotations.AvalonCommand
 import xyz.avalonxr.data.CommandResult
@@ -25,6 +26,7 @@ import kotlin.jvm.optionals.getOrDefault
 import kotlin.jvm.optionals.getOrNull
 
 @AvalonCommand
+@Transactional
 class WelcomeCommand @Autowired constructor(
     private val messageRepository: WelcomeMessageRepository,
     private val formatService: FormatService,
@@ -60,6 +62,11 @@ class WelcomeCommand @Autowired constructor(
                     optional()
                 }
             }
+
+            subCommand {
+                name("clear")
+                description("Clear welcome message")
+            }
         },
         CommandScope.GUILD
     )
@@ -71,9 +78,10 @@ class WelcomeCommand @Autowired constructor(
         return when (options.subCommand) {
             "set" -> setSubcommand(source, options)
             "preview" -> previewSubcommand(source, options)
+            "clear" -> clearSubcommand(source)
             else ->
                 CommandError
-                    .InvalidSubcommand("set", "preview")
+                    .InvalidSubcommand("set", "preview", "clear")
                     .let(CommandResult::failure)
         }
     }
@@ -128,9 +136,20 @@ class WelcomeCommand @Autowired constructor(
             true -> formatService.formatWithContext(source, content)
             else -> content
         }
-        val template = "$message in channel: $channelName"
+        val template = "'$message' (in channel: $channelName)"
 
         source.sendReply(template)
+
+        return CommandResult.success()
+    }
+
+    private fun clearSubcommand(source: ChatInputInteractionEvent): CommandResult {
+        val guildId = source.guildIdAsLong()
+            ?: return CommandResult.failure(CommandError.CommandNotFromGuild)
+
+        messageRepository.deleteByGuildId(guildId)
+
+        source.sendReply("Cleared welcome message.")
 
         return CommandResult.success()
     }
