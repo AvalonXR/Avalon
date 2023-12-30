@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import xyz.avalonxr.annotations.AvalonCommand
 import xyz.avalonxr.data.CommandResult
 import xyz.avalonxr.data.OptionStore
-import xyz.avalonxr.data.ValidatedOptional
 import xyz.avalonxr.data.command.CommandBinding
 import xyz.avalonxr.data.entity.WelcomeMessage
 import xyz.avalonxr.data.error.CommandError
@@ -87,11 +86,11 @@ class WelcomeCommand @Autowired constructor(
             ?: return CommandResult.failure(CommandError.CommandNotFromGuild)
         val defaultChannel = source.interaction.channel
             .block()
-        val channel = when (val channelOption = options.findChannel<TextChannel>("channel")) {
-            is ValidatedOptional.Empty -> defaultChannel
-            is ValidatedOptional.Invalid -> return CommandResult.failure(CommandError.IncorrectChannelType)
-            is ValidatedOptional.Valid -> channelOption.data
-        }
+            ?: return CommandResult.failure(CommandError.IncorrectChannelType)
+        val channel = options
+            .findChannel<TextChannel>("channel")
+            .onInvalid { return CommandResult.failure(CommandError.IncorrectChannelType) }
+            .getOrDefault(defaultChannel)
         val channelName = channel.mention
         val message = options
             .getOrDefault<String>("message", "Welcome!")
