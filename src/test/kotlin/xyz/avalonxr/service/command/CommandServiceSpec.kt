@@ -92,7 +92,9 @@ class CommandServiceSpec : DescribeSpec({
                 }
 
                 it("Should have correct error message") {
-                    result.data.shouldBeInstanceOf<CommandError.CommandNotFound>()
+                    result.shouldBeInstanceOf<CommandResult.Failure>()
+                        .error
+                        .shouldBeInstanceOf<CommandError.CommandNotFound>()
                 }
             }
         }

@@ -15,11 +15,15 @@ class AvalonDefaultCommandHandler : DefaultCommandHandler {
 
     override fun afterExecution(event: ChatInputInteractionEvent, result: CommandResult) {
         // Do not respond again if the command has already provided a reply
-        val message = result.data
-            ?.message
-            ?: "Command executed successfully!"
-
-        event.sendReply(message)
+        val message = when (result) {
+            is CommandResult.Failure -> result.error.message
+            is CommandResult.Success -> result.payload.toString()
+            is CommandResult.Info -> result.message
+        }
+        // Reply with message
+        getEmbed(result, message)
+            .let(event::replyWithEmbed)
+            .subscribe()
     }
 
     override fun commandNotFound(
@@ -44,6 +48,7 @@ class AvalonDefaultCommandHandler : DefaultCommandHandler {
         getFailureEmbed(command)
             .let(event::replyWithEmbed)
             .subscribe()
+
         return CommandError
             .CommandFailed(command)
             .let(CommandResult::failure)
@@ -53,5 +58,14 @@ class AvalonDefaultCommandHandler : DefaultCommandHandler {
         color(Color.RED)
         title("⚠️ Error 500")
         description("Looks like an error occurred when executing the command $command. Try again later!")
+    }
+
+    private fun getEmbed(result: CommandResult, message: String): EmbedCreateSpec = embed {
+        when (result) {
+            is CommandResult.Failure -> color(Color.RED)
+            is CommandResult.Success -> color(Color.GREEN)
+            is CommandResult.Info -> color(Color.GRAY)
+        }
+        description(message)
     }
 }

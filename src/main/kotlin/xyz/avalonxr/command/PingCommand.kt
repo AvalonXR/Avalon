@@ -35,10 +35,6 @@ class PingCommand : Command {
         val text = options
             .getOrDefault<String>("text", "Pong!")
 
-        source.reply(text)
-            .withEphemeral(true)
-            .block()
-
-        return CommandResult.success()
+        return CommandResult.success(text)
     }
 }

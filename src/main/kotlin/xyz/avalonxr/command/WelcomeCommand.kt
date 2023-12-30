@@ -21,7 +21,6 @@ import xyz.avalonxr.repository.WelcomeMessageRepository
 import xyz.avalonxr.service.FormatService
 import xyz.avalonxr.utils.getGuildChannelById
 import xyz.avalonxr.utils.guildIdAsLong
-import xyz.avalonxr.utils.sendReply
 import kotlin.jvm.optionals.getOrDefault
 import kotlin.jvm.optionals.getOrNull
 
@@ -110,9 +109,7 @@ class WelcomeCommand @Autowired constructor(
         welcomeMessage.channelId = channel.id.asLong()
         messageRepository.save(welcomeMessage)
 
-        source.sendReply("Configured welcome message in $channelName")
-
-        return CommandResult.success()
+        return CommandResult.success("Configured welcome message in $channelName")
     }
 
     private fun previewSubcommand(
@@ -138,9 +135,7 @@ class WelcomeCommand @Autowired constructor(
         }
         val template = "'$message' (in channel: $channelName)"
 
-        source.sendReply(template)
-
-        return CommandResult.success()
+        return CommandResult.success(template)
     }
 
     private fun clearSubcommand(source: ChatInputInteractionEvent): CommandResult {
@@ -149,8 +144,6 @@ class WelcomeCommand @Autowired constructor(
 
         messageRepository.deleteByGuildId(guildId)
 
-        source.sendReply("Cleared welcome message.")
-
-        return CommandResult.success()
+        return CommandResult.info("Cleared welcome message.")
     }
 }
