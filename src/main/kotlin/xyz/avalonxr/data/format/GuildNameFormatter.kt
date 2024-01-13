@@ -1,6 +1,6 @@
 package xyz.avalonxr.data.format
 
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
+import discord4j.core.`object`.entity.Guild
 import org.springframework.stereotype.Component
 import xyz.avalonxr.models.discord.DiscordStringFormatter
 
@@ -12,12 +12,13 @@ import xyz.avalonxr.models.discord.DiscordStringFormatter
 @Component
 class GuildNameFormatter : DiscordStringFormatter {
 
-    override fun formatWithContext(event: ChatInputInteractionEvent, input: String): String {
-        val guild = event.interaction.guild
+    override fun formatWithContext(context: FormatContext, input: String): String {
+        val guild = context.guild
+            .map(Guild::getName)
             .block()
-            ?.name
-            ?: "Unknown"
+            ?: "[Invalid guild]"
 
-        return input.replace("\${guild}", guild)
+        return input
+            .replace("\${guild}", guild)
     }
 }

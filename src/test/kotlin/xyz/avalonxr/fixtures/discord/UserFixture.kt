@@ -8,8 +8,10 @@ import io.mockk.mockk
 object UserFixture {
 
     fun make(
-        _username: String = "FooBar"
+        _username: String = "FooBar",
+        _mention: String = "@FooBar"
     ): User = mockk {
         every { username } returns _username
+        every { mention } returns _mention
     }
 }

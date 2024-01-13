@@ -1,6 +1,5 @@
 package xyz.avalonxr.data.format
 
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
 import org.springframework.stereotype.Component
 import xyz.avalonxr.models.discord.DiscordStringFormatter
 
@@ -15,7 +14,7 @@ class TimestampFormatter : DiscordStringFormatter {
     private val now: Long
         get() = System.currentTimeMillis() / 1000
 
-    override fun formatWithContext(event: ChatInputInteractionEvent, input: String): String = input
+    override fun formatWithContext(context: FormatContext, input: String): String = input
         .replace("\${now.date}", "<t:$now:d>")
         .replace("\${now.dateText}", "<t:$now:D>")
         .replace("\${now.time}", "<t:$now:t>")

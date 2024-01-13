@@ -1,6 +1,6 @@
 package xyz.avalonxr.data.format
 
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
+import discord4j.core.`object`.entity.channel.Channel
 import org.springframework.stereotype.Component
 import xyz.avalonxr.models.discord.DiscordStringFormatter
 
@@ -12,11 +12,12 @@ import xyz.avalonxr.models.discord.DiscordStringFormatter
 @Component
 class ChannelMentionFormatter : DiscordStringFormatter {
 
-    override fun formatWithContext(event: ChatInputInteractionEvent, input: String): String {
-        val channel = event.interaction.channel
+    override fun formatWithContext(context: FormatContext, input: String): String {
+        val channel = context
+            .channel
+            .map(Channel::getMention)
             .block()
-            ?.mention
-            ?: "Unknown"
+            ?: "[Invalid channel]"
 
         return input
             .replace("\${channel}", channel)
