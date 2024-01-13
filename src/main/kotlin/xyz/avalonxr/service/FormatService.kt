@@ -4,6 +4,8 @@ import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
+import xyz.avalonxr.data.format.FormatContext
 import xyz.avalonxr.models.discord.DiscordStringFormatter
 
 /**
@@ -26,12 +28,25 @@ class FormatService @Autowired constructor(
      * @param event The event which contains the relevant context for formatting with.
      * @param input The input string to format.
      */
-    fun formatWithContext(event: ChatInputInteractionEvent, input: String): String {
+    fun formatForCommand(event: ChatInputInteractionEvent, input: String): String {
+        val context = FormatContext(
+            guild = event.interaction.guild,
+            channel = event.interaction.channel,
+            member = Mono.justOrEmpty(event.interaction.member),
+            user = Mono.just(event.interaction.user),
+        )
+        return process(context, input)
+    }
+
+    fun formatWithContext(context: FormatContext, input: String): String = process(context, input)
+
+    private fun process(context: FormatContext, input: String): String {
         logger.debug("Running formatter over input string: $input")
         // Feed input through each formatter and return
         var current = input
         formatters
-            .forEach { current = it.formatWithContext(event, current) }
+            .forEach { current = it.formatWithContext(context, current) }
+
         return current
     }
 

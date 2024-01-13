@@ -1,6 +1,6 @@
 package xyz.avalonxr.models.discord
 
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
+import xyz.avalonxr.data.format.FormatContext
 
 /**
  * @author Atri
@@ -14,8 +14,8 @@ interface DiscordStringFormatter {
     /**
      * Formats a given [input] using context provided via an event.
      *
-     * @param event The event which contains the relevant context for formatting with.
+     * @param context The event which contains the relevant context for formatting with.
      * @param input The input string to format.
      */
-    fun formatWithContext(event: ChatInputInteractionEvent, input: String): String
+    fun formatWithContext(context: FormatContext, input: String): String
 }

@@ -130,7 +130,7 @@ class WelcomeCommand @Autowired constructor(
             .getGuildChannelById(welcomeMessage?.channelId)
             ?.mention
         val message = when (formatted) {
-            true -> formatService.formatWithContext(source, content)
+            true -> formatService.formatForCommand(source, content)
             else -> content
         }
         val template = "'$message' (in channel: $channelName)"

@@ -1,6 +1,5 @@
 package xyz.avalonxr.data.format
 
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
 import org.springframework.stereotype.Component
 import xyz.avalonxr.models.discord.DiscordStringFormatter
 
@@ -13,13 +12,15 @@ import xyz.avalonxr.models.discord.DiscordStringFormatter
 class UsernameFormatter : DiscordStringFormatter {
 
     override fun formatWithContext(
-        event: ChatInputInteractionEvent,
+        context: FormatContext,
         input: String
     ): String {
-        val user = event.interaction.user
+        val user = context.user.block()
+        val name = user?.username ?: "[Invalid username]"
+        val mention = user?.mention ?: "[Invalid mention]"
 
         return input
-            .replace("\${username.username}", user.username)
-            .replace("\${username.mention}", user.mention)
+            .replace("\${username.username}", name)
+            .replace("\${username.mention}", mention)
     }
 }
