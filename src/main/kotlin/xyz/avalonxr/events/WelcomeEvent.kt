@@ -4,6 +4,7 @@ import discord4j.common.util.Snowflake
 import discord4j.core.GatewayDiscordClient
 import discord4j.core.event.domain.guild.MemberJoinEvent
 import discord4j.core.`object`.entity.channel.GuildChannel
+import org.slf4j.LoggerFactory
 import reactor.core.Disposable
 import reactor.core.publisher.Mono
 import xyz.avalonxr.annotations.AvalonEvent
@@ -38,6 +39,7 @@ class WelcomeEvent(
             .orElse(null)
 
         if (welcome == null) {
+            logger.debug("Welcome message not configured for Guild ID '$guildId'")
             return Mono.empty()
         }
 
@@ -57,5 +59,11 @@ class WelcomeEvent(
             .formatWithContext(context, welcomeMessage.message)
         // Broadcast message to the provided channel
         channel.sendMessage(message)
+    }
+
+    companion object {
+
+        private val logger = LoggerFactory
+            .getLogger(WelcomeEvent::class.java)
     }
 }
