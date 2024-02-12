@@ -9,6 +9,7 @@ import xyz.avalonxr.binding.discord.command.GlobalCommandBinder
 import xyz.avalonxr.binding.discord.command.GuildCommandBinder
 import xyz.avalonxr.provider.DiscordClientProvider
 import xyz.avalonxr.service.command.CommandService
+import xyz.avalonxr.service.command.events.DiscordEventService
 
 /**
  * @author Atri
@@ -27,12 +28,15 @@ class DiscordBindingService @Autowired constructor(
     private val guildCommandBinder: GuildCommandBinder,
     private val discordClientProvider: DiscordClientProvider,
     private val commandService: CommandService,
+    private val discordEventService: DiscordEventService,
 ) {
 
     /**
      * Initializes the service following the 3-phase lifecycle described above.
      */
     fun initialize() {
+        // Initialize the event bus
+        discordEventService.initialize()
         // Delete unused command definitions
         deleteStaleBindings()
         // Create new or update existing command definitions
