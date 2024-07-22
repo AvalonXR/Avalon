@@ -2,7 +2,7 @@
 kotlin = "1.9.21"
 vrcapi-java = "1.15.0"
 discord = "3.2.6"
-spring-boot = "3.2.4"
+spring-boot = "3.3.2"
 spring-dependency-management = "1.1.6"
 kotest-core = "5.8.0"
 kotest-spring = "1.1.3"
