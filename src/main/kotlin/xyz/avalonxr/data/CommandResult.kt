@@ -103,5 +103,3 @@ fun AvalonError.failure(): CommandResult = CommandResult.failure(this)
  * @return An [Info] object containing the corresponding [info] message.
  */
 fun String.info(): CommandResult = CommandResult.info(this)
-
-

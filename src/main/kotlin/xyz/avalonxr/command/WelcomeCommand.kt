@@ -80,9 +80,10 @@ class WelcomeCommand @Autowired constructor(
         "set" -> setSubcommand(source, options)
         "preview" -> previewSubcommand(source, options)
         "clear" -> clearSubcommand(source)
-        else -> CommandError
-            .InvalidSubcommand("set", "preview", "clear")
-            .failure()
+        else ->
+            CommandError
+                .InvalidSubcommand("set", "preview", "clear")
+                .failure()
     }
 
     private fun setSubcommand(
