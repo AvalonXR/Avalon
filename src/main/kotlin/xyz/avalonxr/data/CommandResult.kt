@@ -1,5 +1,8 @@
 package xyz.avalonxr.data
 
+import xyz.avalonxr.data.CommandResult.Failure
+import xyz.avalonxr.data.CommandResult.Info
+import xyz.avalonxr.data.CommandResult.Success
 import xyz.avalonxr.data.error.AvalonError
 
 /**
@@ -73,3 +76,32 @@ sealed class CommandResult {
         fun info(info: String): CommandResult = Info(info)
     }
 }
+
+/**
+ * Creates a [Success] instance.
+ *
+ * @param value The value associated with this result.
+ *
+ * @return A [Success] object containing the corresponding [value].
+ */
+fun Any?.success(): CommandResult = CommandResult.success(this)
+
+/**
+ * Creates a [Failure] instance.
+ *
+ * @param error The error associated with this result.
+ *
+ * @return A [Failure] object containing the corresponding [error].
+ */
+fun AvalonError.failure(): CommandResult = CommandResult.failure(this)
+
+/**
+ * Creates an [Info] instance.
+ *
+ * @param info The message associated with this result.
+ *
+ * @return An [Info] object containing the corresponding [info] message.
+ */
+fun String.info(): CommandResult = CommandResult.info(this)
+
+

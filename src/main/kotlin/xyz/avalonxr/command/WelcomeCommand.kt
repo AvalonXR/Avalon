@@ -10,6 +10,9 @@ import xyz.avalonxr.data.OptionStore
 import xyz.avalonxr.data.command.CommandBinding
 import xyz.avalonxr.data.entity.WelcomeMessage
 import xyz.avalonxr.data.error.CommandError
+import xyz.avalonxr.data.failure
+import xyz.avalonxr.data.info
+import xyz.avalonxr.data.success
 import xyz.avalonxr.dsl.discord.OptionType
 import xyz.avalonxr.dsl.discord.command
 import xyz.avalonxr.dsl.discord.option
@@ -73,16 +76,13 @@ class WelcomeCommand @Autowired constructor(
     override fun processCommand(
         source: ChatInputInteractionEvent,
         options: OptionStore
-    ): CommandResult {
-        return when (options.subCommand) {
-            "set" -> setSubcommand(source, options)
-            "preview" -> previewSubcommand(source, options)
-            "clear" -> clearSubcommand(source)
-            else ->
-                CommandError
-                    .InvalidSubcommand("set", "preview", "clear")
-                    .let(CommandResult::failure)
-        }
+    ): CommandResult = when (options.subCommand) {
+        "set" -> setSubcommand(source, options)
+        "preview" -> previewSubcommand(source, options)
+        "clear" -> clearSubcommand(source)
+        else -> CommandError
+            .InvalidSubcommand("set", "preview", "clear")
+            .failure()
     }
 
     private fun setSubcommand(
@@ -90,10 +90,10 @@ class WelcomeCommand @Autowired constructor(
         options: OptionStore
     ): CommandResult {
         val guildId = source.guildIdAsLong()
-            ?: return CommandResult.failure(CommandError.CommandNotFromGuild)
+            ?: return CommandError.CommandNotFromGuild.failure()
         val defaultChannel = source.interaction.channel
             .block()
-            ?: return CommandResult.failure(CommandError.IncorrectChannelType)
+            ?: return CommandError.IncorrectChannelType.failure()
         val channel = options
             .findChannel<TextChannel>("channel")
             .onInvalid { return CommandResult.failure(CommandError.IncorrectChannelType) }
@@ -109,7 +109,8 @@ class WelcomeCommand @Autowired constructor(
         welcomeMessage.channelId = channel.id.asLong()
         messageRepository.save(welcomeMessage)
 
-        return CommandResult.success("Configured welcome message in $channelName")
+        return "Configured welcome message in $channelName"
+            .success()
     }
 
     private fun previewSubcommand(
@@ -117,33 +118,32 @@ class WelcomeCommand @Autowired constructor(
         options: OptionStore
     ): CommandResult {
         val formatted = options
-            .getOrDefault<Boolean>("formatted", false)
+            .getOrDefault("formatted", false)
         val guildId = source.guildIdAsLong()
-            ?: return CommandResult.failure(CommandError.CommandNotFromGuild)
+            ?: return CommandError.CommandNotFromGuild.failure()
         val welcomeMessage = messageRepository
             .findByGuildId(guildId)
             .getOrNull()
-        val content = welcomeMessage
-            ?.message
-            ?: "No welcome message configured."
+        val content = welcomeMessage?.message
+            ?: return "No welcome message configured.".info()
         val channelName = source
-            .getGuildChannelById(welcomeMessage?.channelId)
+            .getGuildChannelById(welcomeMessage.channelId)
             ?.mention
+            ?: "None Provided"
         val message = when (formatted) {
             true -> formatService.formatForCommand(source, content)
             else -> content
         }
-        val template = "'$message' (in channel: $channelName)"
 
-        return CommandResult.success(template)
+        return "\"$message\" (in channel: $channelName)".success()
     }
 
     private fun clearSubcommand(source: ChatInputInteractionEvent): CommandResult {
         val guildId = source.guildIdAsLong()
-            ?: return CommandResult.failure(CommandError.CommandNotFromGuild)
+            ?: return CommandError.CommandNotFromGuild.failure()
 
         messageRepository.deleteByGuildId(guildId)
 
-        return CommandResult.info("Cleared welcome message.")
+        return "Cleared welcome message.".info()
     }
 }
